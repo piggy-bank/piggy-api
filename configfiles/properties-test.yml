@@ -2,9 +2,9 @@ data_base:
   dialect: "mysql"
   user_name: "mysql-prod-user"
   password: "mysql-prod-pass"
-  project: piggylocaltest
+  project: zinc-involution-379214
   zone: us-central1
-  instance_name: test-piggybanking-sql
-  database_name: piggy-test
+  instance_name: piggy-test-db
+  database_name: piggy-test-db
 sender:
   callback_url: "https://piggybanking.com"

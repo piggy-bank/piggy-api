@@ -13,10 +13,26 @@ func (a *App) setUserRouters() {
 	a.Router.GET("/users", a.GetAllUsers)
 	a.Router.GET("/users/:user_id", a.GetUser)
 	a.Router.PUT("/users/:user_id", a.UpdateUser)
-	a.Router.POST("/users/on-boarding", a.UserSignup)
+	a.Router.POST("/users", a.UserSignup)
 	a.Router.DELETE("/users/:user_id", a.DeleteUser)
 	a.Router.PUT("/users/:user_id/disable", a.DisableUser)
 	a.Router.PUT("/users/:user_id/enable", a.EnableUser)
+}
+
+func (a *App) setPiggyRouters() {
+	a.Router.GET("/piggy", a.GetAllUsers)
+	a.Router.GET("/piggy/:piggy_id", a.GetUser)
+	a.Router.PUT("/piggy/:piggy_id", a.UpdateUser)
+	a.Router.POST("/piggy", a.UserSignup)
+	a.Router.DELETE("/piggy/:piggy_id", a.DeleteUser)
+}
+
+func (a *App) setDonationRouters() {
+	a.Router.GET("/donation", a.)
+	a.Router.GET("/donation/:donation_id", a.GetUser)
+	a.Router.PUT("/donation/:donation_id", a.UpdateUser)
+	a.Router.POST("/donation", a.UserSignup)
+	a.Router.DELETE("/donation/:donation_id", a.DeleteUser)
 }
 
 // User Handlers.
@@ -51,6 +67,50 @@ func (a *App) EnableUser(ctx *gin.Context) {
 func (a *App) ForgotPassword(ctx *gin.Context) {
 	handler.ForgotPassword(a.DB, a.AuthClient, ctx, a.Config)
 }
+
+// Piggy Handlers.
+func (a *App) GetAllPiggies(ctx *gin.Context) {
+	handler.GetAllPiggies()a.DB, ctx)
+}
+
+func (a *App) GetPiggy(ctx *gin.Context) {
+	handler.GetPiggy(a.DB, ctx)
+}
+
+func (a *App) CreatePiggy(ctx *gin.Context) {
+	handler.CreatePiggy(a.DB, ctx)
+}
+
+func (a *App) UpdatePiggy(ctx *gin.Context) {
+	handler.UpdatePiggy(a.DB, ctx)
+}
+
+func (a *App) DeletePiggy(ctx *gin.Context) {
+	handler.DeletePiggy(a.DB, ctx)
+}
+
+// Donation Handlers.
+func (a *App) GetAllDonations(ctx *gin.Context) {
+	handler.GetAllDonations()a.DB, ctx)
+}
+
+func (a *App) GetDonation(ctx *gin.Context) {
+	handler.GetDonation(a.DB, ctx)
+}
+
+func (a *App) CreateDonation(ctx *gin.Context) {
+	handler.CreateDonation(a.DB, ctx)
+}
+
+func (a *App) UpdateDonation(ctx *gin.Context) {
+	handler.UpdateDonation(a.DB, ctx)
+}
+
+func (a *App) DeleteDonation(ctx *gin.Context) {
+	handler.DeleteDonation(a.DB, ctx)
+}
+
+
 
 func useCorsMiddleware(public *gin.RouterGroup) {
 	public.Use(cors.Middleware(cors.Config{
