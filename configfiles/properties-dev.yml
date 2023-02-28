@@ -2,6 +2,6 @@ data_base:
   dialect: "mysql"
   user_name: root
   password: StrongDevPassw0rd
-  database_name: mysql-rookie-local
+  database_name: mysql-piggy-local
 sender:
   callback_url: "http://localhost:3000/"

@@ -81,7 +81,7 @@ func PasswordResetEmail(client *auth.Client, ctx *gin.Context, config *configura
 		return err
 	}
 	fmt.Println(emailLink)
-	from := mail.NewEmail("Rookie", "nacho@rookiebanking.com")
+	from := mail.NewEmail("piggy", "nacho@piggybanking.com")
 	apikey := os.Getenv("SENDGRID_API_KEY")
 	senderClient := sendgrid.NewSendClient(apikey)
 	m := mail.NewV3Mail()
@@ -89,7 +89,7 @@ func PasswordResetEmail(client *auth.Client, ctx *gin.Context, config *configura
 
 	p := mail.NewPersonalization()
 	tos := []*mail.Email{
-		mail.NewEmail("Rookie user", email),
+		mail.NewEmail("piggy user", email),
 	}
 	p.AddTos(tos...)
 	m.SetTemplateID("d-6886e1422d2244e3aadd1c38dffcc2fe")
@@ -106,7 +106,7 @@ func PasswordResetEmail(client *auth.Client, ctx *gin.Context, config *configura
 
 func SendEmailRandomNumber(client *auth.Client, ctx *gin.Context, config *configuration.Config, email string, random string) error {
 
-	from := mail.NewEmail("Roookie", "nacho@rookiebanking.com")
+	from := mail.NewEmail("Roookie", "nacho@piggybanking.com")
 	apikey := os.Getenv("SENDGRID_API_KEY")
 	senderClient := sendgrid.NewSendClient(apikey)
 	m := mail.NewV3Mail()
@@ -114,7 +114,7 @@ func SendEmailRandomNumber(client *auth.Client, ctx *gin.Context, config *config
 
 	p := mail.NewPersonalization()
 	tos := []*mail.Email{
-		mail.NewEmail("Rookie user", email),
+		mail.NewEmail("piggy user", email),
 	}
 	p.AddTos(tos...)
 	m.SetTemplateID("d-93683e1c14d44bf3b3b75dbc0ea08caa")
@@ -136,7 +136,7 @@ func SendSMSRandomNumber(ctx *gin.Context, number string, random string) error {
 	params := &openapi.CreateMessageParams{}
 	params.SetTo(number)
 	params.SetFrom(TWILIO_PHONE_NUMBER)
-	params.SetBody(fmt.Sprintf("Your Rookie verification code from rookie is : %v", random))
+	params.SetBody(fmt.Sprintf("Your piggy verification code from piggy is : %v", random))
 
 	_, err := client.Api.CreateMessage(params)
 	if err != nil {
