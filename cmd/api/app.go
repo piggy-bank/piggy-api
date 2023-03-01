@@ -55,6 +55,7 @@ func (a *App) Initialize() {
 	public := a.Router.Group("/public/users")
 	useCorsMiddleware(public)
 	public.GET("/piggy", a.GetAllPiggies)
+	public.GET("/piggy/:piggy_id", a.GetPiggy)
 	// configure firebase
 	firebaseAuth := firebase.SetupFirebase()
 	a.AuthClient = firebaseAuth
