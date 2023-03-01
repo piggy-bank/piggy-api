@@ -14,6 +14,6 @@ type Piggy struct {
 	Goal        int64      `json:"goal"`
 	StartDate   time.Time  `json:"start_date"`
 	EndDate     time.Time  `json:"end_date"`
-	UserAddress int        `json:"expiry_month"`
+	UserAddress string     `json:"user_address"`
 	Donations   []Donation `json:"donation"`
 }

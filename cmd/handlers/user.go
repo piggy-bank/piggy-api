@@ -2,12 +2,14 @@ package handlers
 
 import (
 	"fmt"
+	"log"
 	"math/rand"
 	"net/http"
 
 	"firebase.google.com/go/auth"
 	"github.com/gin-gonic/gin"
 	"github.com/manubidegain/piggy-api/cmd/api/configuration"
+	blockchainservices "github.com/manubidegain/piggy-api/cmd/blockchain-services"
 	"github.com/manubidegain/piggy-api/cmd/entities"
 
 	"github.com/jinzhu/gorm"
@@ -30,17 +32,24 @@ func GetAllUsers(db *gorm.DB, ctx *gin.Context) {
 
 }
 
-func UserSignup(db *gorm.DB, ctx *gin.Context) {
+func UserSignup(db *gorm.DB, ctx *gin.Context, profile string, flowConfig *configuration.FlowConfig, log *log.Logger, projectConfig *configuration.ProjectConfig) {
 	model := entities.User{}
 	user := entities.User{}
 	if err := ctx.BindJSON(&user); err != nil {
 		ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+		return
 	}
 	id := ctx.GetString("UUID")
 	user.ID = id
-
+	flowAddress, err := blockchainservices.CreateAccount(ctx, profile, flowConfig, log, projectConfig)
+	if err != nil {
+		ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+	user.FlowAddress = flowAddress
 	if err := db.FirstOrCreate(&model, user).Error; err != nil {
 		ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+		return
 	}
 	if model.Status {
 		ctx.IndentedJSON(http.StatusUnprocessableEntity, "user already exist")

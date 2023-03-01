@@ -1,0 +1,35 @@
+{
+	"emulators": {
+		"default": {
+			"port": 3569,
+			"serviceAccount": "emulator-account"
+		}
+	},
+	"contracts": {
+		"PiggyBanks":"./blockchain/contracts/piggy.cdc",
+        "MetadataViews": "0x1d7e57aa55817448",
+        "NonFungibleToken": "0x1d7e57aa55817448",
+		"FlowToken" : "0x7e60df042a9c0868",
+		"FungibleToken" : "0x9a0766d93b6608b7"
+	},
+	"networks": {
+		"emulator": "127.0.0.1:3569",
+		"mainnet": "access.mainnet.nodes.onflow.org:9000",
+		"testnet": "access.devnet.nodes.onflow.org:9000"
+	},
+	"accounts": {
+		"emulator-account": {
+			"address": "f8d6e0586b0a20c7",
+			"key": "479f52e7dd0b1b8eee0edd2d77ab4af782a31991ba0f7a8f179408ef9faececd"
+		},
+		"testnet-account" : {
+			"address": "36e55122ece3464c",
+			"key": "ae02806e92a9a4581ef5ea28166053afddc187329934692dd24b4a8352bb0d24"
+		}
+	},
+	"deployments": {
+		"testnet" : {
+			"testnet-account": ["PiggyBanks"]
+		}
+	}
+}

@@ -41,7 +41,7 @@ func (a *App) GetAllUsers(ctx *gin.Context) {
 }
 
 func (a *App) UserSignup(ctx *gin.Context) {
-	handler.UserSignup(a.DB, ctx)
+	handler.UserSignup(a.DB, ctx, a.Profile, a.FlowConfig, a.Logger, a.ProjectConfig)
 }
 
 func (a *App) GetUser(ctx *gin.Context) {
@@ -78,7 +78,7 @@ func (a *App) GetPiggy(ctx *gin.Context) {
 }
 
 func (a *App) CreatePiggy(ctx *gin.Context) {
-	handler.CreatePiggy(a.DB, ctx)
+	handler.CreatePiggy(a.DB, ctx, a.FlowConfig, a.Profile, a.Logger)
 }
 
 func (a *App) UpdatePiggy(ctx *gin.Context) {
@@ -99,7 +99,7 @@ func (a *App) GetDonation(ctx *gin.Context) {
 }
 
 func (a *App) CreateDonation(ctx *gin.Context) {
-	handler.CreateDonation(a.DB, ctx)
+	handler.CreateDonation(a.DB, ctx, a.FlowConfig, a.Profile, a.Logger, a.ProjectConfig)
 }
 
 func (a *App) UpdateDonation(ctx *gin.Context) {

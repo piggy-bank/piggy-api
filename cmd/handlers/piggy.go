@@ -1,10 +1,13 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"github.com/manubidegain/piggy-api/cmd/api/configuration"
+	blockchainservices "github.com/manubidegain/piggy-api/cmd/blockchain-services"
 	"github.com/manubidegain/piggy-api/cmd/entities"
 )
 
@@ -28,13 +31,19 @@ func GetPiggy(db *gorm.DB, ctx *gin.Context) {
 	ctx.IndentedJSON(http.StatusOK, piggy)
 }
 
-func CreatePiggy(db *gorm.DB, ctx *gin.Context) {
+func CreatePiggy(db *gorm.DB, ctx *gin.Context, flowconfig *configuration.FlowConfig, profile string, log *log.Logger) {
 	model := entities.Piggy{}
 	piggy := entities.Piggy{}
 	if err := ctx.BindJSON(&piggy); err != nil {
 		ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
 		return
 	}
+	piggyId, err := blockchainservices.CreateBlockchainPiggy(piggy.UserAddress, piggy.Name, piggy.Description, flowconfig, profile, ctx, log)
+	if err != nil {
+		ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+	piggy.ID = uint(piggyId)
 	if err := db.FirstOrCreate(&model, piggy).Error; err != nil {
 		ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
 		return

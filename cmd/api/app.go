@@ -1,19 +1,21 @@
 package api
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"sync"
 	"time"
 
+	"cloud.google.com/go/logging"
 	"firebase.google.com/go/auth"
 	_ "github.com/GoogleCloudPlatform/cloudsql-proxy/proxy/dialers/mysql"
 	"github.com/gin-gonic/gin"
 	cors "github.com/itsjamie/gin-cors"
 	"github.com/manubidegain/piggy-api/cmd/api/configuration"
 	"github.com/manubidegain/piggy-api/cmd/entities"
-	"github.com/manubidegain/piggy-api/cmd/repository"
 	"github.com/manubidegain/piggy-api/firebase"
 	"github.com/manubidegain/piggy-api/utils"
 
@@ -22,11 +24,16 @@ import (
 
 // App has router and db instances
 type App struct {
-	Router     *gin.Engine
-	DB         *gorm.DB
-	Uploader   repository.ClientUploader
-	AuthClient *auth.Client
-	Config     *configuration.Config
+	Router        *gin.Engine
+	DB            *gorm.DB
+	AuthClient    *auth.Client
+	Config        *configuration.Config
+	FlowConfig    *configuration.FlowConfig
+	Profile       string
+	Logger        *log.Logger
+	messagesMu    sync.Mutex
+	messages      []string
+	ProjectConfig *configuration.ProjectConfig
 }
 
 // App initialize with predefined configuration
@@ -36,11 +43,11 @@ func (a *App) Initialize() {
 		port = "8000"
 	}
 	//Calculate and build profile from environment.
-	profile := utils.CalculateProfile()
-	log.Printf("Instance running in %s scope", profile)
-	a.Config = utils.BuildConfig(profile)
+	a.Profile = utils.CalculateProfile()
+	log.Printf("Instance running in %s scope", a.Profile)
+	a.ProjectConfig = configuration.BuildConfig(a.Profile)
 
-	dbURI := getDataBaseURI(a.Config, profile)
+	dbURI := getDataBaseURI(a.Config, a.Profile)
 
 	//Open and migrate database connection with GORM
 	db, err := gorm.Open(a.Config.DB.Dialect, dbURI)
@@ -60,9 +67,19 @@ func (a *App) Initialize() {
 	firebaseAuth := firebase.SetupFirebase()
 	a.AuthClient = firebaseAuth
 
-	//TO-DO Handle config for test and dev
-	a.Uploader.SetupBucket(profile)
+	// Creates a client.
+	ctx := context.Background()
+	projectID := a.ProjectConfig.ProjectID
+	client, err := logging.NewClient(ctx, projectID)
+	if err != nil {
+		log.Fatalf("Failed to create client: %v", err)
+	}
+	defer client.Close()
 
+	// Sets the name of the log to write to.
+	logName := "my-log"
+
+	a.Logger = client.Logger(logName).StandardLogger(logging.Info)
 	a.Router.Use(cors.Middleware(cors.Config{
 		Origins:         "*",
 		Methods:         "GET, PUT, POST, DELETE",
@@ -73,8 +90,10 @@ func (a *App) Initialize() {
 		ValidateHeaders: false,
 	}))
 
+	a.FlowConfig = configuration.ReadFlowConfig()
+
 	// set db & firebase auth to gin context with a middleware to all incoming request
-	if profile != "dev" {
+	if a.Profile != "dev" {
 		a.Router.Use(func(c *gin.Context) {
 			c.Set("firebaseAuth", firebaseAuth)
 		})
