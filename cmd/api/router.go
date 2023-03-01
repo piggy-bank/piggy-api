@@ -28,7 +28,7 @@ func (a *App) setPiggyRouters() {
 }
 
 func (a *App) setDonationRouters() {
-	a.Router.GET("/donation", a.GetAllDonations)
+	a.Router.GET("/donation", a.GetAllUserDonations)
 	a.Router.GET("/donation/:donation_id", a.GetDonation)
 	a.Router.PUT("/donation/:donation_id", a.UpdateDonation)
 	a.Router.POST("/donation", a.CreateDonation)
