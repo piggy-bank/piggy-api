@@ -36,6 +36,8 @@ func UserSignup(db *gorm.DB, ctx *gin.Context) {
 	if err := ctx.BindJSON(&user); err != nil {
 		ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
 	}
+	id := ctx.GetString("UUID")
+	user.ID = id
 
 	if err := db.FirstOrCreate(&model, user).Error; err != nil {
 		ctx.IndentedJSON(http.StatusInternalServerError, err.Error())

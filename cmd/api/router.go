@@ -20,19 +20,19 @@ func (a *App) setUserRouters() {
 }
 
 func (a *App) setPiggyRouters() {
-	a.Router.GET("/piggy", a.GetAllUsers)
-	a.Router.GET("/piggy/:piggy_id", a.GetUser)
-	a.Router.PUT("/piggy/:piggy_id", a.UpdateUser)
-	a.Router.POST("/piggy", a.UserSignup)
-	a.Router.DELETE("/piggy/:piggy_id", a.DeleteUser)
+	a.Router.GET("/piggy", a.GetAllPiggies)
+	a.Router.GET("/piggy/:piggy_id", a.GetPiggy)
+	a.Router.PUT("/piggy/:piggy_id", a.UpdatePiggy)
+	a.Router.POST("/piggy", a.CreatePiggy)
+	a.Router.DELETE("/piggy/:piggy_id", a.DeletePiggy)
 }
 
 func (a *App) setDonationRouters() {
-	a.Router.GET("/donation", a.)
-	a.Router.GET("/donation/:donation_id", a.GetUser)
-	a.Router.PUT("/donation/:donation_id", a.UpdateUser)
-	a.Router.POST("/donation", a.UserSignup)
-	a.Router.DELETE("/donation/:donation_id", a.DeleteUser)
+	a.Router.GET("/donation", a.GetAllDonations)
+	a.Router.GET("/donation/:donation_id", a.GetDonation)
+	a.Router.PUT("/donation/:donation_id", a.UpdateDonation)
+	a.Router.POST("/donation", a.CreateDonation)
+	a.Router.DELETE("/donation/:donation_id", a.DeleteDonation)
 }
 
 // User Handlers.
@@ -70,7 +70,7 @@ func (a *App) ForgotPassword(ctx *gin.Context) {
 
 // Piggy Handlers.
 func (a *App) GetAllPiggies(ctx *gin.Context) {
-	handler.GetAllPiggies()a.DB, ctx)
+	handler.GetAllPiggies(a.DB, ctx)
 }
 
 func (a *App) GetPiggy(ctx *gin.Context) {
@@ -91,7 +91,7 @@ func (a *App) DeletePiggy(ctx *gin.Context) {
 
 // Donation Handlers.
 func (a *App) GetAllDonations(ctx *gin.Context) {
-	handler.GetAllDonations()a.DB, ctx)
+	handler.GetAllDonations(a.DB, ctx)
 }
 
 func (a *App) GetDonation(ctx *gin.Context) {
@@ -109,8 +109,6 @@ func (a *App) UpdateDonation(ctx *gin.Context) {
 func (a *App) DeleteDonation(ctx *gin.Context) {
 	handler.DeleteDonation(a.DB, ctx)
 }
-
-
 
 func useCorsMiddleware(public *gin.RouterGroup) {
 	public.Use(cors.Middleware(cors.Config{

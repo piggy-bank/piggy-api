@@ -54,7 +54,7 @@ func (a *App) Initialize() {
 	a.Router = gin.Default()
 	public := a.Router.Group("/public/users")
 	useCorsMiddleware(public)
-	public.POST("/sign-up", a.UserSignup)
+	public.GET("/piggy", a.GetAllPiggies)
 	// configure firebase
 	firebaseAuth := firebase.SetupFirebase()
 	a.AuthClient = firebaseAuth
@@ -120,6 +120,8 @@ func DBMigrate(db *gorm.DB) *gorm.DB {
 // Set all required routers
 func (a *App) setRouters() {
 	a.setUserRouters()
+	a.setDonationRouters()
+	a.setPiggyRouters()
 }
 
 // Run the app on it's router
