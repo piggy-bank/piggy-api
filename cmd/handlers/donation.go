@@ -8,10 +8,11 @@ import (
 	"github.com/manubidegain/piggy-api/cmd/entities"
 )
 
-func GetAllDonations(db *gorm.DB, ctx *gin.Context) {
+func GetAllUserDonations(db *gorm.DB, ctx *gin.Context) {
+	userId := ctx.GetString("userID")
 	donations := []entities.Donation{}
 
-	if err := db.Preload("Piggy").Find(&donations).Error; err != nil {
+	if err := db.Preload("Piggy").Find(&donations, "sender_id = ?", userId).Error; err != nil {
 		ctx.IndentedJSON(http.StatusInternalServerError, err.Error())
 	}
 

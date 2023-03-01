@@ -90,8 +90,8 @@ func (a *App) DeletePiggy(ctx *gin.Context) {
 }
 
 // Donation Handlers.
-func (a *App) GetAllDonations(ctx *gin.Context) {
-	handler.GetAllDonations(a.DB, ctx)
+func (a *App) GetAllUserDonations(ctx *gin.Context) {
+	handler.GetAllUserDonations(a.DB, ctx)
 }
 
 func (a *App) GetDonation(ctx *gin.Context) {
