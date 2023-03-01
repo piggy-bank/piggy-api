@@ -11,8 +11,7 @@ type User struct {
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 	DeletedAt      *time.Time `sql:"index"`
-	FirstName      string     `json:"first_name"`
-	LastName       string     `json:"last_name"`
+	DisplayName    string     `json:"display_name"`
 	Email          string     `gorm:"primary_key" json:"email"`
 	StreetAddress  string     `json:"street_address"`
 	FlowAddress    string     `json:"flow_address"`

@@ -27,8 +27,8 @@ func EmailSignup(client *auth.Client,
 	url := fmt.Sprintf("%smember-login?email=%s&first_name=%s&last_name=%s&invited_by=%s&&user_id=%s",
 		config.Sender.CallbackURL,
 		url.QueryEscape(user.Email),
-		user.FirstName,
-		user.LastName,
+		user.DisplayName,
+		user.DisplayName,
 		senderName,
 		userID,
 	)
@@ -50,7 +50,7 @@ func EmailSignup(client *auth.Client,
 
 	p := mail.NewPersonalization()
 	tos := []*mail.Email{
-		mail.NewEmail(user.FirstName, user.Email),
+		mail.NewEmail(user.DisplayName, user.Email),
 	}
 	p.AddTos(tos...)
 	m.SetTemplateID("d-d2ae83297aac42f1921e101c0b89820d")
