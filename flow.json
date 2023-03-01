@@ -18,10 +18,6 @@
 		"testnet": "access.devnet.nodes.onflow.org:9000"
 	},
 	"accounts": {
-		"emulator-account": {
-			"address": "f8d6e0586b0a20c7",
-			"key": "479f52e7dd0b1b8eee0edd2d77ab4af782a31991ba0f7a8f179408ef9faececd"
-		},
 		"testnet-account" : {
 			"address": "36e55122ece3464c",
 			"key": "ae02806e92a9a4581ef5ea28166053afddc187329934692dd24b4a8352bb0d24"

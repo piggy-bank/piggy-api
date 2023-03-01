@@ -26,6 +26,7 @@ import (
 	"github.com/onflow/flow-go-sdk/access"
 	"github.com/onflow/flow-go-sdk/access/grpc"
 	"github.com/onflow/flow-go-sdk/crypto"
+	"github.com/stripe/stripe-go/client"
 )
 
 const (
@@ -271,6 +272,8 @@ func printAllData(dataMap map[string]interface{}) {
 func GetServiceAccount(flowClient access.Client, config *configuration.FlowConfig, profile string) (flow.Address, *flow.AccountKey, crypto.Signer) {
 	// Handle this with secrets for PROD
 	account := getServiceAccount(config, profile)
+	fmt.Printf(account.Address)
+	fmt.Printf(account.Key)
 	privateKey, err := crypto.DecodePrivateKeyHex(crypto.ECDSA_P256, account.Key)
 	if err != nil {
 		msg := "error decoding privateKey" + err.Error()
@@ -454,4 +457,19 @@ func MakeInternalApiCallNoAuth(method string, url string, body []byte, ctx *gin.
 		return nil, fmt.Errorf("unable to make api call %s , returns statuscode : %v with body %s", url, resp.StatusCode, string(bodyBytes[:]))
 	}
 	return bodyBytes, nil
+}
+
+// ChargeJSON incoming data for Stripe API
+type ChargeJSON struct {
+	Amount       int64  `json:"amount"`
+	ReceiptEmail string `json:"receiptEmail"`
+}
+
+func SetupStripe() *client.API {
+	stripeKey := os.Getenv("STRIPE_API_KEY")
+
+	sc := &client.API{}
+	sc.Init(stripeKey, nil)
+	return sc
+
 }

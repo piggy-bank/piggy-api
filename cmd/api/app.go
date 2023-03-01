@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"sync"
 	"time"
 
 	"cloud.google.com/go/logging"
@@ -18,6 +17,7 @@ import (
 	"github.com/manubidegain/piggy-api/cmd/entities"
 	"github.com/manubidegain/piggy-api/firebase"
 	"github.com/manubidegain/piggy-api/utils"
+	"github.com/stripe/stripe-go/client"
 
 	"github.com/jinzhu/gorm"
 )
@@ -28,11 +28,10 @@ type App struct {
 	DB            *gorm.DB
 	AuthClient    *auth.Client
 	Config        *configuration.Config
+	StripeClient  client.API
 	FlowConfig    *configuration.FlowConfig
 	Profile       string
 	Logger        *log.Logger
-	messagesMu    sync.Mutex
-	messages      []string
 	ProjectConfig *configuration.ProjectConfig
 }
 
@@ -45,7 +44,10 @@ func (a *App) Initialize() {
 	//Calculate and build profile from environment.
 	a.Profile = utils.CalculateProfile()
 	log.Printf("Instance running in %s scope", a.Profile)
-	a.ProjectConfig = configuration.BuildConfig(a.Profile)
+	a.ProjectConfig = configuration.BuildProjectConfig(a.Profile)
+	a.Config = configuration.BuildConfig(a.Profile)
+	a.StripeClient = *utils.SetupStripe()
+	a.FlowConfig = configuration.ReadFlowConfig()
 
 	dbURI := getDataBaseURI(a.Config, a.Profile)
 
@@ -89,8 +91,6 @@ func (a *App) Initialize() {
 		Credentials:     false,
 		ValidateHeaders: false,
 	}))
-
-	a.FlowConfig = configuration.ReadFlowConfig()
 
 	// set db & firebase auth to gin context with a middleware to all incoming request
 	if a.Profile != "dev" {

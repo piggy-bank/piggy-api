@@ -35,6 +35,12 @@ type DBConfig struct {
 	DatabaseName string `yaml:"database_name"`
 }
 
+func BuildConfig(profile string) *Config {
+	path := configurationPackagePath + "/properties-" + profile + ".yml"
+	return GetConfig(path)
+
+}
+
 func GetConfig(path string) *Config {
 	propertiesFile, err := os.Open(path)
 	if err != nil {
@@ -111,7 +117,7 @@ type URLSConfig struct {
 	TicketTypesURL string `yaml:"ticket_types"`
 }
 
-func BuildConfig(profile string) *ProjectConfig {
+func BuildProjectConfig(profile string) *ProjectConfig {
 	path := configurationPackagePath + "/properties-" + profile + ".yml"
 	return GetProjectConfig(path)
 
